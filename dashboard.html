@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard - Condomínio Premium</title>
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI', sans-serif;
+    background: linear-gradient(rgba(0,18,46,0.7), rgba(0,18,46,0.7)),
+    url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1920&q=80')
+    no-repeat center center fixed;
+    background-size:cover;
+    color:#fff;
+}
+
+/* TOPO */
+.header{
+    height:70px;
+    background:rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 30px;
+    border-bottom:1px solid rgba(255,255,255,0.2);
+}
+
+.logo{
+    font-size:20px;
+    letter-spacing:2px;
+    font-weight:300;
+}
+
+.user{
+    font-size:14px;
+}
+
+/* LAYOUT */
+.container{
+    display:flex;
+    height:calc(100vh - 70px);
+}
+
+/* MENU */
+.sidebar{
+    width:260px;
+    background:rgba(0,0,0,0.4);
+    backdrop-filter: blur(12px);
+    border-right:1px solid rgba(255,255,255,0.2);
+    padding-top:25px;
+}
+
+.menu-item{
+    padding:16px 28px;
+    cursor:pointer;
+    transition:0.3s;
+    font-size:14px;
+    letter-spacing:1px;
+}
+
+.menu-item:hover{
+    background:rgba(255,255,255,0.1);
+}
+
+/* CONTEÚDO */
+.content{
+    flex:1;
+    padding:40px;
+}
+
+.title{
+    font-size:28px;
+    font-weight:300;
+    letter-spacing:2px;
+    margin-bottom:30px;
+}
+
+/* HOME CARDS */
+.cards{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap:25px;
+}
+
+.card{
+    background:rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border:1px solid rgba(255,255,255,0.2);
+    border-radius:18px;
+    padding:25px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.4);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-6px);
+}
+
+.card h3{
+    margin:0;
+    font-weight:400;
+    letter-spacing:1px;
+}
+
+.card p{
+    font-size:26px;
+    margin-top:15px;
+    font-weight:bold;
+    color:#00d4ff;
+}
+</style>
+</head>
+
+<body>
+
+<!-- TOPO -->
+<div class="header">
+    <div class="logo">CONDOMÍNIO PREMIUM</div>
+    <div class="user">Bem-vindo, Morador</div>
+</div>
+
+<div class="container">
+
+    <!-- MENU -->
+    <div class="sidebar">
+        <div class="menu-item" onclick="setView('home')">🏠 Home</div>
+        <div class="menu-item" onclick="setView('reserva')">📅 Reservar Área Comum</div>
+        <div class="menu-item" onclick="setView('moradores')">🏢 Moradores</div>
+        <div class="menu-item" onclick="setView('apartamentos')">🏘️ Apartamentos</div>
+        <div class="menu-item" onclick="setView('ocorrencias')">🚨 Ocorrências</div>
+        <div class="menu-item" onclick="setView('usuarios')">👥 Usuários</div>
+        <div class="menu-item" onclick="setView('perfil')">🙍 Perfil</div>
+        <div class="menu-item" onclick="logout()">🚪 Sair</div>
+    </div>
+
+    <!-- CONTEÚDO -->
+    <div class="content" id="content">
+
+        <!-- HOME -->
+        <div id="home">
+            <div class="title">Dashboard</div>
+            <div class="cards">
+                <div class="card">
+                    <h3>Reservas Ativas</h3>
+                    <p>3</p>
+                </div>
+
+                <div class="card">
+                    <h3>Moradores</h3>
+                    <p>128</p>
+                </div>
+
+                <div class="card">
+                    <h3>Apartamentos</h3>
+                    <p>64</p>
+                </div>
+
+                <div class="card">
+                    <h3>Ocorrências</h3>
+                    <p>2</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TELAS DINÂMICAS -->
+        <div id="reserva" style="display:none">
+            <div class="title">Reservar Área Comum</div>
+            <p>📅 Tela de reserva de áreas comuns</p>
+        </div>
+
+        <div id="moradores" style="display:none">
+            <div class="title">Moradores</div>
+            <p>🏢 Lista de moradores</p>
+        </div>
+
+        <div id="apartamentos" style="display:none">
+            <div class="title">Apartamentos</div>
+            <p>🏘️ Gestão de apartamentos</p>
+        </div>
+
+        <div id="ocorrencias" style="display:none">
+            <div class="title">Ocorrências</div>
+            <p>🚨 Registro de ocorrências</p>
+        </div>
+
+        <div id="usuarios" style="display:none">
+            <div class="title">Usuários</div>
+            <p>👥 Gestão de usuários do sistema</p>
+        </div>
+
+        <div id="perfil" style="display:none">
+            <div class="title">Perfil</div>
+            <p>🙍 Dados do usuário logado</p>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+function setView(view){
+    const views = ["home","reserva","moradores","apartamentos","ocorrencias","usuarios","perfil"];
+    views.forEach(v=>{
+        document.getElementById(v).style.display = "none";
+    });
+    document.getElementById(view).style.display = "block";
+}
+
+function logout(){
+    window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

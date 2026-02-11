@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Gestão de Condomínios</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* FUNDO COM IMAGEM */
+body{
+    min-height:100vh;
+    background: 
+        linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
+        url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1920&q=80')
+        no-repeat center center fixed;
+    background-size: cover;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* CONTAINER */
+.container{
+    width:90%;
+    max-width:1100px;
+    background: rgba(20, 25, 35, 0.96);
+    border-radius:18px;
+    padding:30px;
+    color:#fff;
+    box-shadow:0 0 30px rgba(0,0,0,0.7);
+}
+
+/* TITULO */
+h1{
+    text-align:center;
+    margin-bottom:25px;
+    font-weight:300;
+    letter-spacing:2px;
+}
+
+/* FORM */
+.form{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.form input{
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    outline:none;
+    background:#0f172a;
+    color:#fff;
+}
+
+/* BOTÕES */
+.actions{
+    grid-column: span 2;
+    display:flex;
+    gap:12px;
+    margin-top:10px;
+}
+
+.btn{
+    padding:12px 22px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+    transition:0.3s;
+    color:#fff;
+}
+
+/* CORES */
+.btn-criar{ background:#2563eb; }   /* azul */
+.btn-listar{ background:#64748b; }  /* cinza */
+.btn-editar{ background:#16a34a; }  /* verde */
+.btn-excluir{ background:#dc2626; } /* vermelho */
+
+.btn:hover{
+    transform:scale(1.05);
+    filter:brightness(1.15);
+}
+
+/* LISTA */
+.list{
+    margin-top:25px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.card{
+    background:#0f172a;
+    padding:16px;
+    border-radius:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 0 12px rgba(0,0,0,0.4);
+}
+
+.card-info p{
+    font-size:14px;
+    color:#cbd5e1;
+}
+
+.card-actions{
+    display:flex;
+    gap:8px;
+}
+
+/* RESPONSIVO */
+@media(max-width:700px){
+    .form{
+        grid-template-columns:1fr;
+    }
+    .actions{
+        flex-direction:column;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🏢 Gestão de Condomínios</h1>
+
+    <!-- FORM -->
+    <div class="form">
+        <input type="text" id="nome" placeholder="Nome do condomínio">
+        <input type="text" id="endereco" placeholder="Endereço">
+        <input type="text" id="cidade" placeholder="Cidade">
+        <input type="text" id="estado" placeholder="Estado">
+
+        <div class="actions">
+            <button class="btn btn-criar" onclick="criar()">Criar</button>
+            <button class="btn btn-listar" onclick="listar()">Listar</button>
+        </div>
+    </div>
+
+    <!-- LISTAGEM -->
+    <div class="list" id="lista"></div>
+</div>
+
+<script>
+let condominios = [];
+let editIndex = null;
+
+function criar(){
+    const nome = document.getElementById('nome').value.trim();
+    const endereco = document.getElementById('endereco').value.trim();
+    const cidade = document.getElementById('cidade').value.trim();
+    const estado = document.getElementById('estado').value.trim();
+
+    if(!nome || !endereco || !cidade || !estado){
+        alert("Preencha todos os campos");
+        return;
+    }
+
+    if(editIndex === null){
+        condominios.push({nome,endereco,cidade,estado});
+    } else {
+        condominios[editIndex] = {nome,endereco,cidade,estado};
+        editIndex = null;
+    }
+
+    limpar();
+    listar();
+}
+
+function listar(){
+    const lista = document.getElementById('lista');
+    lista.innerHTML = '';
+
+    condominios.forEach((c,i)=>{
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+            <div class="card-info">
+                <strong>${c.nome}</strong>
+                <p>${c.endereco} - ${c.cidade}/${c.estado}</p>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-editar" onclick="editar(${i})">Editar</button>
+                <button class="btn btn-excluir" onclick="excluir(${i})">Excluir</button>
+            </div>
+        `;
+        lista.appendChild(div);
+    });
+}
+
+function editar(i){
+    const c = condominios[i];
+    document.getElementById('nome').value = c.nome;
+    document.getElementById('endereco').value = c.endereco;
+    document.getElementById('cidade').value = c.cidade;
+    document.getElementById('estado').value = c.estado;
+    editIndex = i;
+}
+
+function excluir(i){
+    if(confirm("Deseja excluir este condomínio?")){
+        condominios.splice(i,1);
+        listar();
+    }
+}
+
+function limpar(){
+    document.getElementById('nome').value = '';
+    document.getElementById('endereco').value = '';
+    document.getElementById('cidade').value = '';
+    document.getElementById('estado').value = '';
+}
+</script>
+
+</body>
+</html>

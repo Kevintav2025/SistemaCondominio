@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Admin - Usuários</title>
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background: linear-gradient(rgba(0,18,46,.65), rgba(0,18,46,.65)),
+    url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1920&q=80')
+    no-repeat center center fixed;
+    background-size:cover;
+    min-height:100vh;
+    color:#fff;
+}
+
+.container{
+    max-width:1300px;
+    margin:40px auto;
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(12px);
+    border-radius:20px;
+    padding:30px;
+    border:1px solid rgba(255,255,255,.2);
+    box-shadow:0 25px 50px rgba(0,0,0,.4);
+}
+
+h1{text-align:center;font-weight:300;letter-spacing:3px;margin-bottom:35px;}
+
+.grid{display:grid;grid-template-columns:1fr 1.4fr;gap:30px;}
+
+.card{
+    background:rgba(255,255,255,.10);
+    border-radius:16px;
+    padding:25px;
+    border:1px solid rgba(255,255,255,.2);
+}
+
+.card h2{font-weight:300;letter-spacing:2px;margin-bottom:20px;}
+
+input, select{
+    width:100%;
+    padding:12px;
+    margin-bottom:12px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,.3);
+    background:rgba(255,255,255,.12);
+    color:#fff;
+    outline:none;
+}
+
+select option{color:#000;}
+
+.btn{
+    padding:10px 18px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:13px;
+    transition:.3s;
+}
+
+.btn-create{background:#0066cc;color:#fff;}
+.btn-edit{background:#00c853;color:#000;}
+.btn-delete{background:#d50000;color:#fff;}
+.btn-list{background:#7b1fa2;color:#fff;}
+
+.btn-create:hover{background:#0088ff;}
+.btn-edit:hover{background:#00e676;}
+.btn-delete:hover{background:#ff1744;}
+.btn-list:hover{background:#9c27b0;}
+
+table{width:100%;border-collapse:collapse;}
+th,td{padding:12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.2);font-size:14px;}
+.actions{display:flex;gap:8px;}
+
+.badge{
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+.Admin{background:#ff9800;color:#000;}
+.Morador{background:#00e5ff;color:#000;}
+.Síndico{background:#00e676;color:#000;}
+.Porteiro{background:#ffd600;color:#000;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>ADMIN · USUÁRIOS</h1>
+
+<div class="grid">
+
+<!-- ===== FORM ===== -->
+<div class="card">
+<h2>Criar Usuário</h2>
+
+<input type="text" id="nome" placeholder="Nome completo">
+<input type="email" id="email" placeholder="Email">
+<input type="password" id="senha" placeholder="Senha">
+
+<select id="tipo">
+    <option value="">Tipo de usuário</option>
+    <option>Admin</option>
+    <option>Síndico</option>
+    <option>Porteiro</option>
+    <option>Morador</option>
+</select>
+
+<button class="btn btn-create" onclick="criarUsuario()">Criar Usuário</button>
+</div>
+
+<!-- ===== LISTA ===== -->
+<div class="card">
+<h2>Lista de Usuários</h2>
+
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Email</th>
+<th>Tipo</th>
+<th>Ações</th>
+</tr>
+</thead>
+
+<tbody id="listaUsuarios"></tbody>
+</table>
+
+</div>
+</div>
+</div>
+
+<script>
+let usuarios = [
+    {nome:"Kevin Tavares", email:"kevin@email.com", tipo:"Admin"},
+    {nome:"Maria Silva", email:"maria@email.com", tipo:"Morador"},
+    {nome:"João Santos", email:"joao@email.com", tipo:"Porteiro"}
+];
+
+function render(){
+    const tbody = document.getElementById("listaUsuarios");
+    tbody.innerHTML = "";
+
+    usuarios.forEach((u,i)=>{
+        tbody.innerHTML += `
+        <tr>
+            <td>${u.nome}</td>
+            <td>${u.email}</td>
+            <td><span class="badge ${u.tipo}">${u.tipo}</span></td>
+            <td class="actions">
+                <button class="btn btn-edit" onclick="editar(${i})">Editar</button>
+                <button class="btn btn-delete" onclick="excluir(${i})">Excluir</button>
+            </td>
+        </tr>
+        `;
+    });
+}
+
+function criarUsuario(){
+    const nome = document.getElementById("nome").value;
+    const email = document.getElementById("email").value;
+    const tipo = document.getElementById("tipo").value;
+
+    if(!nome || !email || !tipo){
+        alert("Preencha todos os campos!");
+        return;
+    }
+
+    usuarios.push({nome,email,tipo});
+    render();
+
+    document.getElementById("nome").value="";
+    document.getElementById("email").value="";
+    document.getElementById("senha").value="";
+    document.getElementById("tipo").value="";
+}
+
+function excluir(i){
+    if(confirm("Deseja excluir este usuário?")){
+        usuarios.splice(i,1);
+        render();
+    }
+}
+
+function editar(i){
+    const novoNome = prompt("Novo nome:", usuarios[i].nome);
+    if(novoNome){
+        usuarios[i].nome = novoNome;
+        render();
+    }
+}
+
+render();
+</script>
+
+</body>
+</html>

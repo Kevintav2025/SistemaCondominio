@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Áreas Comuns - Condomínio Premium</title>
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(rgba(0,18,46,.7),rgba(0,18,46,.7)),
+    url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+    background-size:cover;
+    color:#fff;
+}
+
+.container{
+    max-width:950px;
+    margin:40px auto;
+    padding:20px;
+}
+
+.card{
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(12px);
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:25px;
+    border:1px solid rgba(255,255,255,0.2);
+    box-shadow:0 20px 40px rgba(0,0,0,0.4);
+}
+
+h2{
+    margin-top:0;
+    font-weight:300;
+    letter-spacing:1px;
+}
+
+.form-group{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+input, select{
+    flex:1;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.3);
+    background:rgba(255,255,255,0.1);
+    color:#fff;
+    outline:none;
+}
+
+input::placeholder{
+    color:rgba(255,255,255,0.6);
+}
+
+.btn{
+    padding:12px 18px;
+    border:none;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.btn-add{
+    background:#00cfff;
+    color:#003;
+}
+
+.btn-add:hover{
+    background:#00e5ff;
+}
+
+.area-card{
+    background:rgba(255,255,255,0.12);
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.area-info{
+    font-size:14px;
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+}
+
+.btn-edit{
+    background:#2ecc71;
+    color:#003;
+    border:none;
+    border-radius:8px;
+    padding:8px 12px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn-edit:hover{
+    background:#27ae60;
+}
+
+.btn-del{
+    background:#ff4d4d;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    padding:8px 12px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn-del:hover{
+    background:#ff1a1a;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- CADASTRO -->
+    <div class="card">
+        <h2>Cadastrar Área Comum</h2>
+
+        <div class="form-group">
+            <input type="text" id="nome" placeholder="Nome da área">
+            <input type="text" id="descricao" placeholder="Descrição">
+            <select id="disponivel">
+                <option value="">Disponível?</option>
+                <option value="Sim">Sim</option>
+                <option value="Não">Não</option>
+            </select>
+
+            <button class="btn btn-add" onclick="salvar()">Salvar Área</button>
+        </div>
+    </div>
+
+    <!-- LISTAGEM -->
+    <div class="card">
+        <h2>Áreas Cadastradas</h2>
+        <div id="lista"></div>
+    </div>
+
+</div>
+
+<script>
+let areas = [];
+let editIndex = null;
+
+function salvar(){
+    const nome = document.getElementById('nome').value.trim();
+    const descricao = document.getElementById('descricao').value.trim();
+    const disponivel = document.getElementById('disponivel').value;
+
+    if(!nome || !descricao || !disponivel){
+        alert("Preencha todos os campos!");
+        return;
+    }
+
+    if(editIndex === null){
+        areas.push({ nome, descricao, disponivel });
+    }else{
+        areas[editIndex] = { nome, descricao, disponivel };
+        editIndex = null;
+    }
+
+    limpar();
+    render();
+}
+
+function editar(index){
+    const a = areas[index];
+    document.getElementById('nome').value = a.nome;
+    document.getElementById('descricao').value = a.descricao;
+    document.getElementById('disponivel').value = a.disponivel;
+    editIndex = index;
+}
+
+function excluir(index){
+    if(confirm("Deseja excluir esta área?")){
+        areas.splice(index,1);
+        render();
+    }
+}
+
+function render(){
+    const lista = document.getElementById('lista');
+    lista.innerHTML = "";
+
+    if(areas.length === 0){
+        lista.innerHTML = "<p>Nenhuma área cadastrada.</p>";
+        return;
+    }
+
+    areas.forEach((a,i)=>{
+        const div = document.createElement('div');
+        div.className = "area-card";
+
+        div.innerHTML = `
+            <div class="area-info">
+                <strong>${a.nome}</strong><br>
+                ${a.descricao}<br>
+                Disponível: <b>${a.disponivel}</b>
+            </div>
+            <div class="actions">
+                <button class="btn-edit" onclick="editar(${i})">Editar</button>
+                <button class="btn-del" onclick="excluir(${i})">Excluir</button>
+            </div>
+        `;
+
+        lista.appendChild(div);
+    });
+}
+
+function limpar(){
+    document.getElementById('nome').value="";
+    document.getElementById('descricao').value="";
+    document.getElementById('disponivel').value="";
+}
+
+render();
+</script>
+
+</body>
+</html>

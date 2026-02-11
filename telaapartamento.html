@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Condomínio - Apartamentos</title>
+
+<style>
+/* --- FUNDO --- */
+body{
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(rgba(0, 18, 46, 0.7), rgba(0, 18, 46, 0.7)),
+    url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1920&q=80')
+    no-repeat center center fixed;
+    background-size: cover;
+    margin:0;
+    min-height:100vh;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* --- CONTAINER --- */
+.container{
+    width:95%;
+    max-width:1100px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 25px 50px rgba(0,0,0,0.4);
+}
+
+/* --- HEADER --- */
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.header h2{
+    font-weight:300;
+    letter-spacing:2px;
+}
+
+/* --- FORM --- */
+.form{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.form input{
+    padding:12px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.3);
+    background:rgba(255,255,255,0.1);
+    color:#fff;
+    outline:none;
+}
+
+.form input::placeholder{
+    color:rgba(255,255,255,0.7);
+}
+
+/* --- BOTÕES --- */
+.btn{
+    padding:10px 16px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.btn-criar{ background:#00ffaa; color:#003b2f; }
+.btn-criar:hover{ background:#00dd99; }
+
+.btn-listar{ background:#00b7ff; color:#002f3f; }
+.btn-listar:hover{ background:#0099dd; }
+
+.btn-editar{ background:#00ff66; color:#003b1a; }
+.btn-editar:hover{ background:#00dd55; }
+
+.btn-excluir{ background:#ff4d4d; color:#3b0000; }
+.btn-excluir:hover{ background:#dd3333; }
+
+/* --- TABELA --- */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+th, td{
+    padding:12px;
+    text-align:center;
+}
+
+th{
+    background: rgba(255,255,255,0.15);
+}
+
+tr{
+    background: rgba(255,255,255,0.05);
+}
+
+.actions button{
+    margin:0 5px;
+}
+
+/* --- RESPONSIVO --- */
+@media(max-width:900px){
+    .form{
+        grid-template-columns: 1fr 1fr;
+    }
+}
+@media(max-width:500px){
+    .form{
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h2>🏢 Gestão de Apartamentos</h2>
+        <div>
+            <button class="btn btn-criar" onclick="criar()">Criar</button>
+            <button class="btn btn-listar" onclick="listar()">Listar</button>
+        </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="form">
+        <input type="text" id="numero" placeholder="Número">
+        <input type="text" id="andar" placeholder="Andar">
+        <input type="text" id="bloco" placeholder="Bloco">
+        <input type="text" id="condominio" placeholder="Condomínio">
+    </div>
+
+    <!-- TABELA -->
+    <table>
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Andar</th>
+                <th>Bloco</th>
+                <th>Condomínio</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="tabela"></tbody>
+    </table>
+
+</div>
+
+<script>
+let apartamentos = [];
+let editIndex = null;
+
+function criar(){
+    const numero = numeroEl.value;
+    const andar = andarEl.value;
+    const bloco = blocoEl.value;
+    const condominio = condominioEl.value;
+
+    if(!numero || !andar || !bloco || !condominio){
+        alert("Preencha todos os campos");
+        return;
+    }
+
+    if(editIndex === null){
+        apartamentos.push({numero,andar,bloco,condominio});
+    }else{
+        apartamentos[editIndex] = {numero,andar,bloco,condominio};
+        editIndex = null;
+    }
+
+    limpar();
+    listar();
+}
+
+function listar(){
+    tabela.innerHTML = "";
+    apartamentos.forEach((ap,i)=>{
+        tabela.innerHTML += `
+            <tr>
+                <td>${ap.numero}</td>
+                <td>${ap.andar}</td>
+                <td>${ap.bloco}</td>
+                <td>${ap.condominio}</td>
+                <td class="actions">
+                    <button class="btn btn-editar" onclick="editar(${i})">Editar</button>
+                    <button class="btn btn-excluir" onclick="excluir(${i})">Excluir</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function editar(i){
+    const ap = apartamentos[i];
+    numeroEl.value = ap.numero;
+    andarEl.value = ap.andar;
+    blocoEl.value = ap.bloco;
+    condominioEl.value = ap.condominio;
+    editIndex = i;
+}
+
+function excluir(i){
+    if(confirm("Deseja excluir este apartamento?")){
+        apartamentos.splice(i,1);
+        listar();
+    }
+}
+
+function limpar(){
+    numeroEl.value="";
+    andarEl.value="";
+    blocoEl.value="";
+    condominioEl.value="";
+}
+
+/* Inputs */
+const numeroEl = document.getElementById("numero");
+const andarEl = document.getElementById("andar");
+const blocoEl = document.getElementById("bloco");
+const condominioEl = document.getElementById("condominio");
+const tabela = document.getElementById("tabela");
+</script>
+
+</body>
+</html>

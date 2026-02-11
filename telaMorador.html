@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard - Moradores</title>
+
+<style>
+body{
+    font-family:'Segoe UI',sans-serif;
+    background: linear-gradient(rgba(0,18,46,0.65), rgba(0,18,46,0.65)),
+    url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+    background-size: cover;
+    margin:0;
+    min-height:100vh;
+    color:#fff;
+}
+
+/* HEADER */
+.header{
+    padding:20px;
+    text-align:center;
+    font-size:26px;
+    letter-spacing:2px;
+    font-weight:300;
+}
+
+/* CONTAINER */
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+
+/* CARD */
+.card{
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(12px);
+    border-radius:18px;
+    padding:25px;
+    border:1px solid rgba(255,255,255,0.2);
+    box-shadow:0 25px 50px rgba(0,0,0,0.4);
+    margin-bottom:25px;
+}
+
+/* TITULO */
+.card h3{
+    margin-top:0;
+    font-weight:300;
+    letter-spacing:1px;
+    margin-bottom:15px;
+}
+
+/* FORM GRID */
+.form-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:15px;
+}
+
+/* INPUT */
+input, select{
+    padding:12px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.1);
+    color:#fff;
+    outline:none;
+    width:100%;
+}
+
+input::placeholder{ color:rgba(255,255,255,0.7); }
+
+/* BOTÕES */
+.btn{
+    padding:10px 18px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+    color:#fff;
+}
+
+.btn-create{ background:#0066cc; }
+.btn-create:hover{ background:#0088ff; }
+
+.btn-edit{ background:#00aa55; }
+.btn-edit:hover{ background:#00cc66; }
+
+.btn-delete{ background:#cc0000; }
+.btn-delete:hover{ background:#ff3333; }
+
+/* TABELA */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+th, td{
+    padding:12px;
+    text-align:center;
+}
+
+th{
+    background: rgba(0,0,0,0.3);
+    font-weight:400;
+}
+
+tr{
+    background: rgba(255,255,255,0.08);
+}
+
+tr:hover{
+    background: rgba(255,255,255,0.15);
+}
+
+/* RESPONSIVO */
+@media(max-width:900px){
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">GESTÃO DE MORADORES</div>
+
+<div class="container">
+
+    <!-- CADASTRO -->
+    <div class="card">
+        <h3>Cadastrar Morador</h3>
+
+        <div class="form-grid">
+            <input type="text" id="nome" placeholder="Nome completo">
+            <input type="text" id="cpf" placeholder="CPF">
+            <input type="text" id="telefone" placeholder="Telefone">
+            <input type="email" id="email" placeholder="E-mail">
+
+            <select id="apartamento">
+                <option value="">Selecione o apartamento</option>
+                <option>Apto 101 - Bloco A</option>
+                <option>Apto 202 - Bloco B</option>
+                <option>Apto 303 - Bloco C</option>
+            </select>
+        </div>
+
+        <br>
+        <button class="btn btn-create" onclick="cadastrarMorador()">Cadastrar Morador</button>
+    </div>
+
+    <!-- LISTAGEM -->
+    <div class="card">
+        <h3>Lista de Moradores</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th>Telefone</th>
+                    <th>Email</th>
+                    <th>Apartamento</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="lista-moradores"></tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+let moradores = [];
+
+function cadastrarMorador(){
+    const nome = document.getElementById('nome').value;
+    const cpf = document.getElementById('cpf').value;
+    const telefone = document.getElementById('telefone').value;
+    const email = document.getElementById('email').value;
+    const apartamento = document.getElementById('apartamento').value;
+
+    if(!nome || !cpf || !telefone || !email || !apartamento){
+        alert("Preencha todos os campos!");
+        return;
+    }
+
+    moradores.push({nome, cpf, telefone, email, apartamento});
+    renderizar();
+
+    document.getElementById('nome').value='';
+    document.getElementById('cpf').value='';
+    document.getElementById('telefone').value='';
+    document.getElementById('email').value='';
+    document.getElementById('apartamento').value='';
+}
+
+function renderizar(){
+    const lista = document.getElementById('lista-moradores');
+    lista.innerHTML='';
+
+    moradores.forEach((m,i)=>{
+        lista.innerHTML += `
+            <tr>
+                <td>${m.nome}</td>
+                <td>${m.cpf}</td>
+                <td>${m.telefone}</td>
+                <td>${m.email}</td>
+                <td>${m.apartamento}</td>
+                <td>
+                    <button class="btn btn-edit" onclick="editar(${i})">Editar</button>
+                    <button class="btn btn-delete" onclick="excluir(${i})">Excluir</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function excluir(i){
+    moradores.splice(i,1);
+    renderizar();
+}
+
+function editar(i){
+    const m = moradores[i];
+    document.getElementById('nome').value = m.nome;
+    document.getElementById('cpf').value = m.cpf;
+    document.getElementById('telefone').value = m.telefone;
+    document.getElementById('email').value = m.email;
+    document.getElementById('apartamento').value = m.apartamento;
+
+    moradores.splice(i,1);
+}
+</script>
+
+</body>

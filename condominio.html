@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Reservas - Condomínio</title>
+    <style>
+        /* --- ESTILO GLOBAL E FUNDO COM IMAGEM --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Substitua 'background.jpg' pelo nome do seu arquivo de imagem */
+            background: linear-gradient(rgba(0, 18, 46, 0.8), rgba(0, 18, 46, 0.8)), 
+                        url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #ffffff;
+        }
+
+        /* --- CARD COM EFEITO VIDRO (Glassmorphism) --- */
+        .container {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            width: 340px;
+            text-align: center;
+        }
+
+        h2 {
+            font-weight: 300;
+            margin-bottom: 1.8rem;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+
+        /* --- CAMPOS DE ENTRADA --- */
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #00aaff;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        input::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        /* --- BOTÃO DISCRETO --- */
+        .btn-reservar {
+            width: auto;
+            min-width: 120px;
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: #005bb5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reservar:hover {
+            background-color: #0078ed;
+            transform: translateY(-2px);
+        }
+
+        /* --- MENSAGEM DE SUCESSO COM DESTAQUE --- */
+        #resposta {
+            margin-top: 20px;
+            height: 50px; /* Espaço reservado */
+        }
+
+        .sucesso-msg {
+            display: block;
+            padding: 12px;
+            background: rgba(0, 255, 153, 0.2);
+            border: 2px solid #00ff99;
+            border-radius: 10px;
+            color: #00ff99;
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(0, 255, 153, 0.3);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.5); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Reservar Área</h2>
+
+    <input id="area" placeholder="ID da Área Comum">
+    <input id="usuario" placeholder="Seu ID de Usuário">
+    <input id="data" type="date">
+    <input id="inicio" type="time">
+    <input id="fim" type="time">
+
+    <button class="btn-reservar" onclick="reservar()">RESERVAR</button>
+
+    <div id="resposta"></div>
+</div>
+
+<script>
+    function reservar() {
+        const respostaDiv = document.getElementById('resposta');
+        
+        // Simula o envio
+        respostaDiv.innerHTML = '<span style="color: #ccc;">Processando...</span>';
+
+        setTimeout(() => {
+            // Mostra o destaque de sucesso
+            respostaDiv.innerHTML = '<div class="sucesso-msg">RESERVA CONCLUÍDA!</div>';
+        }, 700);
+    }
+</script>
+
+</body>
+</html>

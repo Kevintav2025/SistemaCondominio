@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Perfil do Usuário</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* RESET */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* BODY */
+body{
+    min-height:100vh;
+    background: linear-gradient(135deg, #0a1a3a, #0bbcd6);
+    overflow-y:auto;   /* 🔥 ISSO RESOLVE O PROBLEMA DE NÃO DESCER */
+    position: relative;
+}
+
+/* PARTÍCULAS */
+.particles{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index:1;
+}
+.particles span{
+    position:absolute;
+    width:6px;
+    height:6px;
+    background:rgba(255,255,255,0.6);
+    border-radius:50%;
+    animation: fall linear infinite;
+}
+@keyframes fall{
+    from{
+        transform: translateY(-10px);
+        opacity:1;
+    }
+    to{
+        transform: translateY(110vh);
+        opacity:0;
+    }
+}
+
+/* CONTAINER */
+.container{
+    position:relative;
+    z-index:2;
+    max-width:1100px;
+    margin:0 auto;
+    padding:40px 20px 80px;
+}
+
+/* HEADER */
+.header{
+    text-align:center;
+    color:#fff;
+    margin-bottom:30px;
+}
+
+.avatar{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:#00e5ff;
+    margin:15px auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:36px;
+    font-weight:bold;
+    color:#003;
+}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap:20px;
+}
+
+/* CARD */
+.card{
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(10px);
+    border-radius:16px;
+    padding:20px;
+    color:#fff;
+    border:1px solid rgba(255,255,255,0.2);
+    box-shadow:0 0 20px rgba(0,0,0,0.2);
+}
+
+/* TITULO CARD */
+.card h3{
+    margin-bottom:15px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+/* INPUT */
+input{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    margin:8px 0;
+    outline:none;
+}
+
+/* BOTÃO */
+button{
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background: linear-gradient(135deg, #00e5ff, #00ffb3);
+    color:#003;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:10px;
+    transition:0.3s;
+}
+button:hover{
+    transform: scale(1.05);
+}
+
+/* MENSAGENS */
+.msg{
+    margin-top:8px;
+    font-size:14px;
+}
+.ok{color:#00ff9c;}
+.err{color:#ff6b6b;}
+
+/* RESPONSIVO */
+@media(max-width:600px){
+    .avatar{
+        width:70px;
+        height:70px;
+        font-size:28px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- PARTÍCULAS -->
+<div class="particles" id="particles"></div>
+
+<div class="container">
+
+    <div class="header">
+        <h1>Perfil do Usuário</h1>
+        <div class="avatar">K</div>
+    </div>
+
+    <div class="grid">
+
+        <!-- DADOS -->
+        <div class="card">
+            <h3>📄 Dados do Usuário</h3>
+            <p><b>Nome:</b> Kevin Tavares</p>
+            <p><b>Email:</b> kevin@email.com</p>
+            <p><b>Tipo:</b> Morador</p>
+        </div>
+
+        <!-- ATUALIZAR EMAIL -->
+        <div class="card">
+            <h3>📧 Atualizar Email</h3>
+            <input type="email" id="novoEmail" placeholder="Novo email">
+            <button onclick="atualizarEmail()">Atualizar Email</button>
+            <div id="msgEmail" class="msg"></div>
+        </div>
+
+        <!-- ALTERAR SENHA -->
+        <div class="card">
+            <h3>🔒 Alterar Senha</h3>
+            <input type="password" id="senhaAtual" placeholder="Senha atual">
+            <input type="password" id="novaSenha" placeholder="Nova senha">
+            <button onclick="alterarSenha()">Alterar Senha</button>
+            <div id="msgSenha" class="msg"></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+/* PARTICULAS */
+const particles = document.getElementById('particles');
+for(let i=0;i<60;i++){
+    const span = document.createElement('span');
+    span.style.left = Math.random()*100+'%';
+    span.style.animationDuration = (5+Math.random()*10)+'s';
+    span.style.opacity = Math.random();
+    span.style.width = span.style.height = (3+Math.random()*5)+'px';
+    particles.appendChild(span);
+}
+
+/* EMAIL */
+function atualizarEmail(){
+    const email = document.getElementById('novoEmail').value;
+    const msg = document.getElementById('msgEmail');
+
+    if(email === ""){
+        msg.innerHTML = "Preencha o email";
+        msg.className = "msg err";
+        return;
+    }
+
+    msg.innerHTML = "Email atualizado com sucesso ✅";
+    msg.className = "msg ok";
+}
+
+/* SENHA */
+function alterarSenha(){
+    const atual = document.getElementById('senhaAtual').value;
+    const nova = document.getElementById('novaSenha').value;
+    const msg = document.getElementById('msgSenha');
+
+    // senha fake só pra teste
+    const senhaCorreta = "123456";
+
+    if(atual !== senhaCorreta){
+        msg.innerHTML = "Senha atual incorreta ❌";
+        msg.className = "msg err";
+        return;
+    }
+
+    if(nova.length < 4){
+        msg.innerHTML = "Senha muito curta ❌";
+        msg.className = "msg err";
+        return;
+    }
+
+    msg.innerHTML = "Senha alterada com sucesso ✅";
+    msg.className = "msg ok";
+}
+</script>
+
+</body>
+</html>

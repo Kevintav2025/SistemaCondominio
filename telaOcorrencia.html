@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard - Ocorrências</title>
+
+<style>
+body{
+    font-family:'Segoe UI',sans-serif;
+    background: linear-gradient(rgba(0,18,46,0.65), rgba(0,18,46,0.65)),
+    url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+    background-size: cover;
+    margin:0;
+    min-height:100vh;
+    color:#fff;
+}
+
+/* HEADER */
+.header{
+    padding:20px;
+    text-align:center;
+    font-size:26px;
+    letter-spacing:2px;
+    font-weight:300;
+}
+
+/* CONTAINER */
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+
+/* CARD */
+.card{
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(12px);
+    border-radius:18px;
+    padding:25px;
+    border:1px solid rgba(255,255,255,0.2);
+    box-shadow:0 25px 50px rgba(0,0,0,0.4);
+    margin-bottom:25px;
+}
+
+/* TITULO */
+.card h3{
+    margin-top:0;
+    font-weight:300;
+    letter-spacing:1px;
+    margin-bottom:15px;
+}
+
+/* FORM GRID */
+.form-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:15px;
+}
+
+/* INPUT */
+input, textarea, select{
+    padding:12px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.1);
+    color:#fff;
+    outline:none;
+    width:100%;
+    resize:none;
+}
+
+textarea{
+    grid-column: span 3;
+    min-height:90px;
+}
+
+input::placeholder, textarea::placeholder{ color:rgba(255,255,255,0.7); }
+
+/* BOTÕES */
+.btn{
+    padding:10px 18px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+    color:#fff;
+}
+
+.btn-create{ background:#0066cc; }
+.btn-create:hover{ background:#0088ff; }
+
+.btn-edit{ background:#ffaa00; }
+.btn-edit:hover{ background:#ffcc33; }
+
+.btn-status{ background:#00aa55; }
+.btn-status:hover{ background:#00cc66; }
+
+.btn-delete{ background:#cc0000; }
+.btn-delete:hover{ background:#ff3333; }
+
+/* STATUS */
+.status-aberta{ color:#ffaa00; font-weight:bold; }
+.status-analise{ color:#00d4ff; font-weight:bold; }
+.status-resolvida{ color:#00ff99; font-weight:bold; }
+
+/* TABELA */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+th, td{
+    padding:12px;
+    text-align:center;
+}
+
+th{
+    background: rgba(0,0,0,0.3);
+    font-weight:400;
+}
+
+tr{
+    background: rgba(255,255,255,0.08);
+}
+
+tr:hover{
+    background: rgba(255,255,255,0.15);
+}
+
+/* RESPONSIVO */
+@media(max-width:900px){
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+    textarea{
+        grid-column: span 1;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">GESTÃO DE OCORRÊNCIAS</div>
+
+<div class="container">
+
+    <!-- REGISTRO -->
+    <div class="card">
+        <h3>Registrar Ocorrência</h3>
+
+        <div class="form-grid">
+            <input type="text" id="titulo" placeholder="Título da ocorrência">
+
+            <select id="status">
+                <option value="Aberta">Aberta</option>
+                <option value="Em Análise">Em Análise</option>
+                <option value="Resolvida">Resolvida</option>
+            </select>
+
+            <textarea id="descricao" placeholder="Descrição da ocorrência"></textarea>
+        </div>
+
+        <br>
+        <button class="btn btn-create" onclick="registrarOcorrencia()">Registrar Ocorrência</button>
+    </div>
+
+    <!-- LISTAGEM -->
+    <div class="card">
+        <h3>Lista de Ocorrências</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Descrição</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="lista-ocorrencias"></tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+let ocorrencias = [];
+
+function registrarOcorrencia(){
+    const titulo = document.getElementById('titulo').value;
+    const descricao = document.getElementById('descricao').value;
+    const status = document.getElementById('status').value;
+
+    if(!titulo || !descricao){
+        alert("Preencha todos os campos!");
+        return;
+    }
+
+    ocorrencias.push({titulo, descricao, status});
+    renderizar();
+
+    document.getElementById('titulo').value='';
+    document.getElementById('descricao').value='';
+    document.getElementById('status').value='Aberta';
+}
+
+function renderizar(){
+    const lista = document.getElementById('lista-ocorrencias');
+    lista.innerHTML='';
+
+    ocorrencias.forEach((o,i)=>{
+        let statusClass = '';
+        if(o.status === 'Aberta') statusClass='status-aberta';
+        if(o.status === 'Em Análise') statusClass='status-analise';
+        if(o.status === 'Resolvida') statusClass='status-resolvida';
+
+        lista.innerHTML += `
+            <tr>
+                <td>${o.titulo}</td>
+                <td>${o.descricao}</td>
+                <td class="${statusClass}">${o.status}</td>
+                <td>
+                    <button class="btn btn-status" onclick="alterarStatus(${i})">Atualizar Status</button>
+                    <button class="btn btn-delete" onclick="excluir(${i})">Excluir</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function excluir(i){
+    ocorrencias.splice(i,1);
+    renderizar();
+}
+
+function alterarStatus(i){
+    const atual = ocorrencias[i].status;
+
+    if(atual === 'Aberta') ocorrencias[i].status = 'Em Análise';
+    else if(atual === 'Em Análise') ocorrencias[i].status = 'Resolvida';
+    else ocorrencias[i].status = 'Aberta';
+
+    renderizar();
+}
+</script>
+
+</body>
+</html>

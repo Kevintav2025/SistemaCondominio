@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Reservas - Condomínio Premium</title>
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(rgba(0,18,46,.7),rgba(0,18,46,.7)),
+    url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+    background-size:cover;
+    color:#fff;
+}
+
+.container{
+    max-width:900px;
+    margin:40px auto;
+    padding:20px;
+}
+
+.card{
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(12px);
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:25px;
+    border:1px solid rgba(255,255,255,0.2);
+    box-shadow:0 20px 40px rgba(0,0,0,0.4);
+}
+
+h2{
+    margin-top:0;
+    font-weight:300;
+    letter-spacing:1px;
+}
+
+.form-group{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+input, select{
+    flex:1;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.3);
+    background:rgba(255,255,255,0.1);
+    color:#fff;
+    outline:none;
+}
+
+input::placeholder{
+    color:rgba(255,255,255,0.6);
+}
+
+.btn{
+    padding:12px 18px;
+    background:#00cfff;
+    border:none;
+    border-radius:10px;
+    color:#003;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.btn:hover{
+    background:#00e5ff;
+}
+
+.reserva-card{
+    background:rgba(255,255,255,0.12);
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.reserva-info{
+    font-size:14px;
+}
+
+.btn-cancel{
+    background:#ff4d4d;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    padding:8px 12px;
+    cursor:pointer;
+}
+
+.btn-cancel:hover{
+    background:#ff1a1a;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- CRIAR RESERVA -->
+    <div class="card">
+        <h2>Criar Reserva</h2>
+
+        <div class="form-group">
+            <select id="area">
+                <option value="">Selecione a área</option>
+                <option value="Salão de Festas">Salão de Festas</option>
+                <option value="Churrasqueira">Churrasqueira</option>
+                <option value="Piscina">Piscina</option>
+                <option value="Quadra">Quadra</option>
+            </select>
+
+            <input type="date" id="data">
+            <input type="time" id="inicio">
+            <input type="time" id="fim">
+
+            <button class="btn" onclick="criarReserva()">Criar Reserva</button>
+        </div>
+    </div>
+
+    <!-- LISTA -->
+    <div class="card">
+        <h2>Reservas Ativas</h2>
+        <div id="lista"></div>
+    </div>
+
+</div>
+
+<script>
+let reservas = [];
+
+function criarReserva(){
+    const area = document.getElementById('area').value;
+    const data = document.getElementById('data').value;
+    const inicio = document.getElementById('inicio').value;
+    const fim = document.getElementById('fim').value;
+
+    if(!area || !data || !inicio || !fim){
+        alert("Preencha todos os campos!");
+        return;
+    }
+
+    if(fim <= inicio){
+        alert("Hora final deve ser maior que a inicial");
+        return;
+    }
+
+    reservas.push({
+        area,
+        data,
+        inicio,
+        fim
+    });
+
+    render();
+    limpar();
+}
+
+function cancelar(index){
+    reservas.splice(index,1);
+    render();
+}
+
+/* ✅ FORMATAÇÃO CORRETA DA DATA */
+function formatData(d){
+    const data = new Date(d);
+    const dia = String(data.getDate()).padStart(2,'0');
+    const mes = String(data.getMonth()+1).padStart(2,'0');
+    const ano = data.getFullYear();
+    return '{22}/{03}/{2026}';
+}
+
+function render(){
+    const lista = document.getElementById('lista');
+    lista.innerHTML = "";
+
+    if(reservas.length === 0){
+        lista.innerHTML = "<p>Nenhuma reserva criada.</p>";
+        return;
+    }
+
+    reservas.forEach((r,i)=>{
+        const div = document.createElement('div');
+        div.className = "reserva-card";
+
+        div.innerHTML = `
+            <div class="reserva-info">
+                <strong>${r.area}</strong><br>
+                Data: ${formatData(r.data)}<br>
+                Horário: ${r.inicio} - ${r.fim}
+            </div>
+            <button class="btn-cancel" onclick="cancelar(${i})">Cancelar</button>
+        `;
+
+        lista.appendChild(div);
+    });
+}
+
+function limpar(){
+    document.getElementById('area').value="";
+    document.getElementById('data').value="";
+    document.getElementById('inicio').value="";
+    document.getElementById('fim').value="";
+}
+
+render();
+</script>
+
+</body>
+</html>

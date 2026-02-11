@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Condomínio</title>
+    <style>
+        /* --- ESTILO GLOBAL E FUNDO --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Certifique-se de que o nome da imagem abaixo seja o mesmo do arquivo no seu PC */
+            background: linear-gradient(rgba(0, 18, 46, 0.75), rgba(0, 18, 46, 0.75)), 
+                       url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1920&q=80')  no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        /* --- CONTAINER PRINCIPAL (VIDRO) --- */
+        .container {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            width: 340px;
+            text-align: center;
+            transition: all 0.5s ease;
+        }
+
+        h2 { font-weight: 300; margin-bottom: 1.5rem; letter-spacing: 1px; }
+
+        /* --- CAMPOS DE ENTRADA --- */
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: #00aaff; background: rgba(0, 0, 0, 0.5); }
+
+        /* --- BOTÕES --- */
+        .btn-entrar {
+            width: 100%;
+            padding: 10px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .btn-entrar:hover { background-color: #0080ff; }
+
+        .btn-link {
+            background: none;
+            border: none;
+            color: #bbb;
+            cursor: pointer;
+            font-size: 0.85rem;
+            text-decoration: underline;
+            margin-top: 15px;
+            display: block;
+            width: 100%;
+        }
+
+        /* --- MENSAGEM DE SUCESSO (ESTILO DESTAQUE) --- */
+        .sucesso-msg {
+            display: block;
+            padding: 12px;
+            background: rgba(0, 255, 153, 0.15);
+            border: 2px solid #00ff99;
+            border-radius: 10px;
+            color: #00ff99;
+            font-weight: bold;
+            margin-top: 20px;
+            animation: pop 0.4s ease-out;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- CONTROLE DE TELAS --- */
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="tela-login" class="container">
+        <h2>Entrar</h2>
+        <input type="email" id="login-email" placeholder="E-mail">
+        <input type="password" id="login-senha" placeholder="Senha">
+        <button class="btn-entrar" onclick="finalizarLogin()">ENTRAR</button>
+        <button class="btn-link" onclick="irParaCadastro()">Não tenho conta (Cadastrar)</button>
+        <div id="status-login"></div>
+    </div>
+
+    <div id="tela-cadastro" class="container hidden">
+        <h2>Criar Conta</h2>
+        <input type="text" id="cad-nome" placeholder="Nome Completo">
+        <input type="email" id="cad-email" placeholder="E-mail">
+        <input type="password" id="cad-senha" placeholder="Crie uma Senha">
+        <button class="btn-entrar" onclick="finalizarCadastro()">CONCLUIR CADASTRO</button>
+        <button class="btn-link" onclick="irParaLogin()">Já tenho conta (Voltar)</button>
+        <div id="status-cadastro"></div>
+    </div>
+
+    <script>
+        // Alternar entre telas
+        function irParaCadastro() {
+            document.getElementById('tela-login').classList.add('hidden');
+            document.getElementById('tela-cadastro').classList.remove('hidden');
+        }
+
+        function irParaLogin() {
+            document.getElementById('tela-cadastro').classList.add('hidden');
+            document.getElementById('tela-login').classList.remove('remove');
+            location.reload(); // Recarrega para limpar
+        }
+
+        // Lógica de Finalização
+        function finalizarLogin() {
+            const email = document.getElementById('login-email').value;
+            const status = document.getElementById('status-login');
+            
+            if(email) {
+                status.innerHTML = '<div class="sucesso-msg">LOGIN CONCLUÍDO!</div>';
+            } else {
+                alert("Preencha o e-mail!");
+            }
+        }
+
+        function finalizarCadastro() {
+            const nome = document.getElementById('cad-nome').value;
+            const status = document.getElementById('status-cadastro');
+
+            if(nome) {
+                status.innerHTML = '<div class="sucesso-msg">CADASTRO CONCLUÍDO!</div>';
+                // Após 2 segundos, volta para o login automaticamente
+                setTimeout(irParaLogin, 2000);
+            } else {
+                alert("Preencha o seu nome!");
+            }
+        }
+    </script>
+</body>
+</html>
